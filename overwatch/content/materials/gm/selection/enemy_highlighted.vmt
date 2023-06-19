@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+	"$basetexture" "gm/selection/enemy_highlighted"
+	"$vertexalpha" "1"
+	"$vertexcolor" 1
+	"$translucent" "1"
+	"$nocull" "1"
+}

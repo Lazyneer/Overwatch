@@ -1,0 +1,397 @@
+@include "halflife2.fgd"
+
+@BaseClass = HideOverwatch
+[
+	hideoverwatch(choices) : "Visible to Overwatch" : 1 : "Will this entity be visible to Overwatch." =
+	[
+		0 : "Yes"
+		1 : "No"
+ 	]
+	
+	hiderebels(choices) : "Visible to the Rebels" : 0 : "Will this entity be visible to the Rebels." =
+	[
+		0 : "Yes"
+		1 : "No"
+ 	]
+]
+
+@PointClass base(Targetname, Parentname, EnableDisable) = env_gmbutton_ow: 
+	"This entity is used to display a button on the Overwatch's GUI as a sprite. The sprite is rendered on the GUI but is dynamically positioned above this entity in the Overwatch's view of the map. The Overwatch can click the sprite to trigger this entity."
+[
+	charges(integer) : "Charges" : 1 : "How many times can this be used."
+	cooldown(float) : "Cooldown" : 10 : "Time in seconds after activated until it can be used again."
+	initialcooldown(float) : "Initial Cooldown" : 0 : "Sets the cooldown the button starts with. The initial cooldown can be set higher than the button's normal cooldown."
+	tooltiptitle(string) : "Tooltip Title" : "" : "Text that is shown as the button's tooltip title."
+	tooltip(string) : "Tooltip" : "" : "Text that is shown on the button's tooltip."
+	butsize(integer) : "Button Min Size" : 25 : "Minimum size of the button to be displayed at minimum zoom level."
+	butsizemax(integer) : "Button Max Size" : 50 : "Maximum size of the button to be displayed at maximum zoom level."
+
+	matenable(sprite) : "Enabled Material" : "gm/buttons/empty_active.vmt" : "Material used when the button is enabled."
+
+	clrenable(color255) : "Enabled Color" : "31 255 127 200" : "Color used on the material when the button is enabled."
+	clrcooldown(color255) : "Cooldown Color" : "200 50 50 200" : "Color used on the material when the button is in cooldown."
+	clrdisable(color255) : "Disabled Color" : "127 127 127 200" : "Color used on the material when the button is disabled."
+	clrmouseover(color255) : "Mouse Over Color" : "31 255 127 255" : "Color used on material when the mouse is over the button."
+	
+	input SetTooltipTitle(string) : "Changes the tooltip title for the button."
+	input SetTooltip(string) : "Changes the tooltip for the button."
+	
+	input SetCooldown(float) : "Sets the cooldown time for the button."
+	input ForceCooldown(float) : "Forces a cooldown to start with the given duration."
+	input ForceCooldownAdd(float) : "Add time to an active cooldown. Does nothing if there isn't an active cooldown."
+	input ForceCooldownSubtract(float) : "Subtract time from an active cooldown. Does nothing if there isn't an active cooldown."
+	
+	input SetCharges(integer) : "Set number of charges left."
+	input ChargesAdd(integer) : "Add more charges."
+	input ChargesSubtract(integer) : "Subtract charges."
+	
+	output OnPressed(void) : "Fired when the GM presses this button."
+	output OnCooldownFinished(void) : "Fired when the cooldown has expired."
+	output OnChargesExpired(void) : "Fired when all charges have expired."
+]
+
+@PointClass base(Targetname, Parentname) size(-8 -8 -8, 8 8 8) sphere(displayrange) = env_hint_ow : 
+	"This entity shows a hint icon and a text message at its position in the world. It can be defined a maximum range to show at, and who to show it to. It's rendered on the player's HUD so it can also be seen through walls if active behind one."
+[
+
+	ismaster(choices) : "Is Template" : 0 : "Is this a template hint. Template hints do not display themselves and are used in the creation of child hints to be attached to other entities, such as prop_physics_multiplayer_ow." =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	team(choices) : "Team" : 2 : "Which team the hint should be displayed to." =
+	[
+		0 : "Resistance"
+		1 : "Overwatch"
+		2 : "Both"
+	]
+	starton(choices) : "StartOn" : 0 : "Does this hint start on." =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	displayrange(float) : "Display Range" : 512 : "The range within which the hint is displayed to the player. Does not concern the GM."
+	requireslos(choices) : "Requires LoS" : 0 : "Whether or not the hint requires LoS in order to be visible to the player." =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	showarrows(choices) : "Show Arrows" : 0 : "Whether or not the hint should show an arrow pointing at its origin." =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	tiptexture(sprite) : "Hint Texture" : "" : "The path to the hint icon material. "
+	text(string) : "Text Label" : "" : "The hint text message displayed to the player on his HUD at the right side of the icon."
+	textcolor(color255) : "Label Color (R G B A)" : "255 255 255 255" : "Used by the Label key."
+	
+	input TurnOn(void) : "Turns the hint on and displays it to all players even if it was already on."
+	input TurnOff(void) : "Turns the hint off and hides it from all players who it was showing to even if it was already off."
+	input DisplayForPlayer(string) : "Display the hint for the activating player. A subsequent TurnOff input will override this. CURRENTLY NOT WORKING - CONTACT LAZYNEER IF YOU WISH TO USE THIS"
+	input HideForPlayer(string) : "Hide the hint for the activating player. A subsequent TurnOn input will override this. CURRENTLY NOT WORKING - CONTACT LAZYNEER IF YOU WISH TO USE THIS"
+]
+
+@PointClass base(Targetname, Parentname) size(-8 -8 -8, 8 8 8) = env_indicator_ow: 
+	"This entity shows a hint at its position in the world. It can display an icon and a text message and arrows pointing to its origin, and it can be set to show through walls."
+[
+	startactive(choices) : "Start On" : 0 : "Should it start on and be visible." =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	showprogress(choices) : "Show progress" : 1 : "Should it display the progress bar. The progress starts at 0% by default. It can be changed via the SetProgress input." =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	team(choices) : "Team" : 0 : "Which team should see this indicator." =
+	[
+		0 : "Both"
+		1 : "Players"
+		2 : "Overwatch"
+	]	
+	gmtexture(sprite) : "Overwatch Icon" : "" : "The path to the texture."
+	rebeltexture(sprite) : "Rebel Icon" : "" : "The path to the texture."
+	
+	gmlabel(string) : "Overwatch Text" : "" : "Label shown to the Overwatch. Displayed under the icon."
+	rebellabel(string) : "Rebel Text" : "" : "Label shown to rebels. Displayed under the icon."
+	
+	input TurnOn(void) : "Turn on the indicator." 
+	input TurnOff(void) : "Turn off the indicator." 
+	input ShowProgress(bool) : "Hides the progress bar with a parameter of 0 and shows it with a parameter of 1." 
+	input SetProgressRatio(float) : "Set progress ratio to show. Between [0..1] where 1 is max (100%). Usage: a func_breakable can have an output OnHealthChanged send to this. Then the func_breakable's health will be shown by the env_indicator_ow."
+]
+
+@FilterClass base(BaseFilter) iconsprite("editor/filter_class.vmt") = filter_activator_team :
+	"A filter that filters by the team of the activator."
+[
+	filterteam(choices) : "Team" : 3 : "The team to filter by. If the filter mode is Allow, only entities whose team matches the given string will pass the filter. If the filter mode is Disallow, all entities EXCEPT those whose team matches the string will pass the filter." =
+	[
+		3 : "Rebels"
+		4 : "Combine (Player controlled NPCs)"
+	]	
+]
+
+@PointClass base(Targetname) size(-8 -8 -8, 8 8 8) = game_activity_ow : 
+	"This entity is used to send outputs on different player activities."
+[
+	// Outputs
+	output OnConnect(void) : "Fired when a player joins the game."
+	output OnDisconnect(void) : "Fired when a player leaves the game."
+	output OnTeamJoinPlayer(void) : "Fired when a player joins a Player team."
+	output OnTeamJoinGM(void) : "Fired when a player joins the Overwatch team."
+	output OnTeamLeavePlayer(void) : "Fired when a player leaves a Player team."
+	output OnTeamLeaveGM(void) : "Fired when a player leaves the Overwatch team."
+	output OnPlayerSpawn(void) : "Fired when a player in the Player team spawns."
+	output OnPlayerDeath(void) : "Fired when a player in the Player team dies."
+	output OnAllPlayersDead(void) : "Fired when all players in the Player team are dead."
+]
+
+@PointClass base(Targetname) iconsprite("editor/game_end.vmt") = game_end_ow : 
+	"This entity is identical to game_end with some additional inputs. It's used to end the round or the map to a draw or a victory for one of the teams." 
+[
+	input EndGame(void) : "End the map without a score screen."
+	input EndGameGMWin(void) : "End the map to Overwatch victory."
+	input EndGamePlayersWin(void) : "End the map to victory for players."
+	input EndGameDraw(void) : "End the map to a draw."
+	input EndRoundGMWin(void) : "End the round to Overwatch victory."
+	input EndRoundPlayersWin(void) : "End the round to victory for players."
+	input EndRoundDraw(void) : "End the round to a draw."
+]
+
+@PointClass base(Targetname) iconsprite("editor/logic_timer.vmt") = game_hudtimer_ow : 
+	"Show a timer."
+[
+	StartOn(choices) : "Start On" : 1 : "Does the timer start displayed on the HUD." =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+
+	InitialTime(integer) : "Initial time" : 120 : "The time that the timer starts with in seconds."
+
+	RebelLabel(string) : "Rebel Text" : "" : "The text to display under the timer for the Resistance."
+	GMLabel(string) : "GM Text" : "" : "The text to display under the timer for the Overwatch."
+
+	input ShowTimer(void) : 	"Shows the timer on the HUD."
+	input HideTimer(void) : 	"Hides the timer from the HUD. Also pauses the countdown."
+	input StartCountdown(void) : 	"Starts/Resumes the timer counting down."
+	input PauseCountdown(void) : 	"Pauses the timer from counting down."
+	input AddTime(integer) : 	"Add a certain amount of time to the timer in seconds."
+	input SubtractTime(integer) : 	"Subtract a certain amount of time to the timer in seconds."
+	input SetTime(integer) : 	"Sets a specific time to the timer in seconds."
+
+	output OnZero(void) : "Fired when the timer reaches zero."
+	output On60SecondsLeft(void) : "Fired when there's 60 seconds left."
+	output On30SecondsLeft(void) : "Fired when there's 30 seconds left."
+	output On15SecondsLeft(void) : "Fired when there's 15 seconds left."
+	output On10SecondsLeft(void) : "Fired when there's 10 seconds left."
+	output On5SecondsLeft(void) : "Fired when there's 5 seconds left."
+	output On4SecondsLeft(void) : "Fired when there's 4 seconds left."
+	output On3SecondsLeft(void) : "Fired when there's 3 seconds left."
+	output On2SecondsLeft(void) : "Fired when there's 2 seconds left."
+	output On1SecondLeft(void) : "Fired when there's 1 second left."
+]
+
+@PointClass base(Targetname) size(-8 -8 -8, 8 8 8) = game_player_count_ow : 
+	"This entity keeps track of the number of connected clients."
+[
+	input GetClientCount(void) : "Fires this entity's OnGetClientCount."
+	input GetPlayerCount(void) : "Fires this entity's OnGetPlayerCount."
+	input GetAlivePlayerCount(void) : "Fires this entity's OnGetAlivePlayerCount."
+
+	// Outputs
+	output OnGetClientCount(integer) : "Fired when this entity's GetClientCount input is called. Outputs the number of all clients currently in the game."
+    output OnGetPlayerCount(integer) : "Fired when this entity's GetPlayerCount input is called. Outputs the number of players currently in the player team."
+	output OnGetAlivePlayerCount(integer) : "Fired when this entity's GetAlivePlayerCount input is called. Outputs the number of alive players currently in the player team."
+]
+
+@PointClass base(Targetname) = game_player_equip_ow :
+	"Exactly the same as game_player_equip, but this one should be used."
+[
+]
+
+@PointClass base(Targetname) = game_player_give_ow :
+	"Similar to game_player_equip, but this gives a weapon to a player when the 'Use' input is used. Only 1 weapon allowed. Use this in cases where you want to give everyone a weapon, because a normal weapon disappears when picked up, or can be farmed for ammo if it respawns."
+[
+	weapon(string) : "Weapon" : "" : "What weapon to give."
+
+	// Inputs
+	input Use(void) : "Gives the weapon to the activator."
+]
+
+@PointClass base(Targetname) size(-8 -8 -8, 8 8 8) = game_respawn_ow: 
+	"This entity manages the respawning of Rebel players."
+[
+	activemessage(integer) : "Active Message" : 0 : "The currently active message that gets displayed to dead players. The default message is displayed if set to 0."
+	
+	message01(string) : "Message 1" : "" : "Text to display to players that are dead when the Active Message is set to 1."
+	message02(string) : "Message 2" : "" : "Text to display to players that are dead when the Active Message is set to 2."
+	message03(string) : "Message 3" : "" : "Text to display to players that are dead when the Active Message is set to 3."
+	message04(string) : "Message 4" : "" : "Text to display to players that are dead when the Active Message is set to 4."
+	message05(string) : "Message 5" : "" : "Text to display to players that are dead when the Active Message is set to 5."
+	message06(string) : "Message 6" : "" : "Text to display to players that are dead when the Active Message is set to 6."
+	message07(string) : "Message 7" : "" : "Text to display to players that are dead when the Active Message is set to 7."
+	message08(string) : "Message 8" : "" : "Text to display to players that are dead when the Active Message is set to 8."
+	
+ 	// Inputs
+	input DisableWave(void) : 		"Disable the timed Respawn Waves. CURRENTLY NOT WORKING - CONTACT LAZYNEER IF YOU WISH TO USE THIS"
+	input EnableWave(void) : 		"Enable the timed Respawn Waves. CURRENTLY NOT WORKING - CONTACT LAZYNEER IF YOU WISH TO USE THIS"
+	input ToggleWave(void) :		"Toggle the timed Respawn Waves. CURRENTLY NOT WORKING - CONTACT LAZYNEER IF YOU WISH TO USE THIS"
+	input SetWaveTime(integer) : 	"Set the time between timed Respawn Waves in seconds. CURRENTLY NOT WORKING - CONTACT LAZYNEER IF YOU WISH TO USE THIS"
+	input SetActiveMessage(integer) : 		"Set the number message to be displayed when players are dead."
+	input ForceRespawn(void) : 		"Force all currently dead players to respawn immediately regardless of the timed Respawn Waves."
+	
+	// Outputs
+	output OnWaveNoRespawn(void) : "Fired when the timed respawn wave hits zero, but there are no dead players to spawn. CURRENTLY NOT WORKING - CONTACT LAZYNEER IF YOU WISH TO USE THIS"
+	output OnWaveRespawn(void) : "Fired when the timed respawn wave hits zero and at least one player is respawned. CURRENTLY NOT WORKING - CONTACT LAZYNEER IF YOU WISH TO USE THIS"
+	output OnForceNoRespawn(void) : "Fired when the entity receives a ForceRespawn input but there are no dead players to spawn. CURRENTLY NOT WORKING - CONTACT LAZYNEER IF YOU WISH TO USE THIS"
+	output OnForceRespawn(void) : "Fired when the entity receives a ForceRespawn input and at least one player is respawned."
+]
+
+@PointClass base(Targetname) size(-8 -8 -8, 8 8 8) = game_settings_ow : 
+	"This entity defines some game settings."
+[
+	allowspawning(choices) : "Allow new player spawning" : 0 : "Whether or not NEW players can spawn after the round has started. New players are players who haven't yet spawned during the current round." =
+	[
+			0 : "No"
+			1 : "Yes"
+ 	]
+	allowrespawning(choices) : "Allow dead player respawning" : 0 : "Whether or not DEAD players can respawn after the round has started. Dead players are players who have spawned at least once during the current round." =
+	[
+			0 : "No"
+			1 : "Yes"
+ 	]
+	defeat_dead(choices) : "Defeat on all players dead" : 1 : "Should the round end in Overwatch victory when all the players are dead." =
+	[
+			0 : "No"
+			1 : "Yes"
+	]
+	
+	input EnableNewPlayerSpawning(void) : "Allow the new players to spawn."
+	input DisableNewPlayerSpawning(void) : "Disallow the new players to spawn."
+	input ToggleNewPlayerSpawning(void) : "Toggle the setting for allowing the new players to spawn."
+
+	input EnableDeadPlayerSpawning(void) : "Allow the dead players to respawn."
+	input DisableDeadPlayerSpawning(void) : "Disallow the dead players to respawn."
+	input ToggleDeadPlayerSpawning(void) : "Toggle the setting for allowing the dead players to respawn."
+
+	input EnableDefeatOnPlayersDead(void) : "Enable the round ending in Overwatch victory if all players are dead."
+	input DisableDefeatOnPlayersDead(void) : "Disable the round ending in Overwatch victory if all players are dead."
+]
+
+@PointClass base(Targetname) size(-8 -8 -8, 8 8 8) = game_tasklist_ow: 
+	"This entity is used to display a list of objectives on the Resistance pleyrs' HUDs and on the Overwatchs's GUI."
+[
+	starton(choices) : "Start On" : 1 : "Should the tasklist start visible." =
+	[
+			0 : "No"
+			1 : "Yes"
+	]
+	visible(choices) : "Start Visible" : 1 : "Should it start visible." =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	team(choices) : "Team" : 3 : "Which team should see this task list." =
+	[
+			2 : "Overwatch"
+			3 : "Players"
+			4 : "Both"
+	]
+	
+	taskmessage(string) : "Task Text" : "" : "This is the text of the task."
+	priority(choices) : "Task Priority" : 0 : "Priority" =
+	[
+			0 : "(1) Low Priority"
+			1 : "(2) Medium Priority"
+			2 : "(3) High Priority"
+	]
+
+	objcount(integer) : "Objective Max Count" : 1 : "How many times does task need to be done before its completed."
+ 
+ 	// Inputs
+	input Complete(void) : 		"Complete the task. Overrides objective count."
+	input Abort(void) : 		"Abort the task."
+	input Activate(void) :		"Activate the task."
+	input Deactivate(void) : 	"Deactivate the task. CURRENTLY NOT WORKING - CONTACT LAZYNEER IF YOU WISH TO USE THIS"
+	input Show(void) : 		"Show the task."
+	input Hide(void) : 		"Hide the task."
+	input AddToCount(integer) : 	"Add or subtract to the objective count."
+	input SetCount(integer) : 		"Set the objective count."
+	input SetMaxCount(integer) : 	"Set the objective max count."
+]
+
+@SolidClass base(Targetname, Parentname) = game_zone_player_ow: 
+	"This entity is identical to game_zone_player except it only accounts for players in the Resistance team in its outputs."
+[
+	input CountPlayersInZone(void) : "Count the number of living Resistance players in the zone, and fire the corresponding outputs."
+	
+	output OnPlayerInZone(void) : "Fired whenever a count finds a player inside the zone. "
+	output OnPlayerOutZone(void) : "Fired whenever a count finds a player outside the zone."
+	output PlayersInCount(integer) : "Fired after a count, and contains the number of players found inside the zone."
+	output PlayersOutCount(integer) : "Fired after a count, and contains the number of players found outside the zone."
+]
+
+@PointClass base(PlayerClass, Targetname) studio("models/editor/playerstart.mdl") = info_player_gm_ow :
+	"This entity indicates the position at which the GM will spawn in the map. Only one info_player_gm_ow entity should be placed in a map."
+[
+	angles(angle) : "Pitch Yaw Roll (Y Z X)" : "80 90 0" : "This entity's orientation in the world. Pitch is rotation around the Y axis, yaw is the rotation around the Z axis, roll is the rotation around the X axis. NOTE: The Z value should be set as 80, so the GM's view is looking down upon the level properly."
+	offset(integer) : "Hearing offset" : 0 : "How many units Overwatch's ears will be lowered."
+]
+
+@PointClass base(PlayerClass, Targetname, Angles) studio("models/editor/playerstart.mdl") = info_player_rebel_ow :
+	"This entity indicates the position and facing direction at which the player will spawn in the map. Any number of info_player_rebel_ow entities may be placed in a map."
+[
+	startdisabled(choices) : "Start Disabled" : 0 : "Should players not spawn here initially." =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	input DisableSpawn(void) : "Turn off this spawnpoint."
+	input EnableSpawn(void) : "Turn on this spawnpoint."
+	input ToggleSpawn(void) : "Toggle this spawnpoint."
+]
+
+@PointClass iconsprite("editor/logic_auto.vmt") = logic_auto_ow : 
+	"This entity is identical to logic_auto with the additional output OnMultiRoundStart which is fired after the warm-up period of a new round."
+[
+	// Outputs
+	output OnMapSpawn(void) : "Fired when the map is loaded for any reason. CURRENTLY NOT WORKING - CONTACT LAZYNEER IF YOU WISH TO USE THIS"
+	output OnNewGame(void) : "Fired when the map is loaded to start a new game. CURRENTLY NOT WORKING - CONTACT LAZYNEER IF YOU WISH TO USE THIS"
+	output OnLoadGame(void) : "Fired when the map is loaded from a saved game. CURRENTLY NOT WORKING - CONTACT LAZYNEER IF YOU WISH TO USE THIS"
+	output OnMapTransition(void) : "Fired when the map is loaded due to a level transition. CURRENTLY NOT WORKING - CONTACT LAZYNEER IF YOU WISH TO USE THIS"
+	output OnBackgroundMap(void) : "Fired when the map is loaded as a background to the main menu. CURRENTLY NOT WORKING - CONTACT LAZYNEER IF YOU WISH TO USE THIS"
+	output OnMultiNewMap(void) : "Fired only in multiplayer, when a new map is loaded. CURRENTLY NOT WORKING - CONTACT LAZYNEER IF YOU WISH TO USE THIS"
+	output OnMultiNewRound(void) : "Fired when the warm-up period of a new round is started."
+	output OnMultiRoundStart(void) : "Fired when the warm-up period of a new round ends."
+]
+
+@PointClass base(npc_enemyfinder) = npc_enemyfinder_ow :
+	"Enemy finder used to find a random rebel within LOS"
+[
+	// Inputs
+	input GetVisibleRebel(void) :	"Find a random rebel player within LOS."
+	
+	// Outputs
+	output OnGetVisibleRebel(string) : "Fired when a random rebel player has been found within LOS.  Returns the entity targetname."
+]
+
+@PointClass base(point_teleport) = point_teleport_ow :
+	"Legacy point teleport entity for Overwatch." []
+
+@PointClass base(prop_physics_multiplayer) studio() = prop_physics_multiplayer_ow :
+	"This entity is identical to prop_physics_multiplayer with a few additions. It has the possibility of attaching a hint entity to it."
+[
+	HintEntity(string) : "Attached Hint" : "" : "The name of an env_hint_ow entity whose settings will be duplicated to display a hint attached to this prop."
+	ReturnHomeTime(float) : "Return Home Time" : 30 : "Time until this prop resets to it's spawn point after being moved. Set to 0 to disable."
+]
+
+@PointClass base(prop_dynamic, HideOverwatch) studio() = prop_dynamic_ow :
+	"A prop_dynamic that can be hidden for Overwatch." []
+
+@PointClass base(Weapon) studio("models/weapons/riotshield.mdl") = weapon_riotshield_ow :
+	"Places a riotshield in the map." []
+
+@PointClass base(Weapon) studio("models/items/healthkit.mdl") = weapon_medpack_ow :
+	"Places a healthkit in the map." []

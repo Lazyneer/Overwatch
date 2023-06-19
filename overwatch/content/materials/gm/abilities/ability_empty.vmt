@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+	"$basetexture" "gm/abilities/ability_empty"
+	"$vertexalpha" "1"
+	"$vertexcolor" 1
+	"$translucent" "1"
+	"$nocull" "1"
+}

@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+	"$basetexture" "icons/hints/explosion"
+	"$vertexalpha" "1"
+	"$vertexcolor" 1
+	"$translucent" "1"
+	"$nocull" "1"
+}

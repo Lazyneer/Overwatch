@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+	"$basetexture" "owc/outbreak/gm/buttons/c_antlionguard_active"
+	"$vertexalpha" "1"
+	"$vertexcolor" 1
+	"$translucent" "1"
+	"$nocull" "1"
+}

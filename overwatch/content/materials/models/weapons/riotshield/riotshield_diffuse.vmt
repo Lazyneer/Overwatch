@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models/weapons/riotshield/riotshield_diffuse"
+	"$bumpmap"	"models/weapons/riotshield/riotshield_normals"
+	"$envmap"	"env_cubemap"
+	"$normalmapalphaenvmapmask" 1
+	"$selfillum" 1
+}

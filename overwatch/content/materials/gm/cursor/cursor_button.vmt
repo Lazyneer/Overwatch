@@ -1,0 +1,9 @@
+"UnlitGeneric"
+{
+	"$baseTexture" "gm/cursor/cursor_button"
+	"$translucent" 1
+	"$ignorez" 1
+	"$nomip" 1
+	"$nolod" 1
+	"$vertexalpha" 1
+}

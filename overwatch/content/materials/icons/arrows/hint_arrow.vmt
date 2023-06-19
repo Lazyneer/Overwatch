@@ -1,0 +1,9 @@
+UnlitGeneric
+{
+	$translucent 1
+	$basetexture icons/arrows/hint_arrow
+	$vertexalpha 1
+	$no_fullbright 1
+	$texturescale 0.20
+	$ignorez 1
+}
