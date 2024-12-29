@@ -450,6 +450,7 @@ function SetLoadout(ply)
         end
     elseif GetRoundState() >= ROUND_WAITING || GAMEMODE.SoloSetup then
         for k, v in pairs(loadout) do
+            if k == "hammerid" || k == "classname" || k == "origin" then continue end
             if GAMEMODE.AmmoCount[k] then
                 for i = 1, v do
                     ply:GiveAmmo(GAMEMODE.AmmoCount[k][2], GAMEMODE.AmmoCount[k][1])

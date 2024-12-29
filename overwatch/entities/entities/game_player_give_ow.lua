@@ -16,11 +16,11 @@ function ENT:Initialize()
     self:SetMoveType(MOVETYPE_NONE)
     self:SetSolid(SOLID_NONE)
     self:SetNoDraw(true)
-    self.loadout = {}
 end
 
 function ENT:KeyValue(key, value)
-    self.loadout[key] = value
+    if key != "weapon" then return end
+    self.Weapon = value
 end
 
 function ENT:AcceptInput(inputName, activator, caller, data)
